@@ -1,0 +1,24 @@
+{
+    "code":200,
+    "message":"成功",
+    "data":[
+        {
+            "id":10,
+            "createTime":null,
+            "updateTime":null,
+            "attrName":"运行内存",
+            "categoryId":14,
+            "categoryLevel":3,
+            "attrValueList":[
+                {
+                    "id":0,
+                    "createTime":null,
+                    "updateTime":null,
+                    "valueName":"8G",
+                    "attrId":10
+                }                
+            ]
+        },        
+    ],
+    "ok":true
+}
