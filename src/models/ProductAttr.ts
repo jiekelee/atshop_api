@@ -11,19 +11,19 @@ const Counter = mongoose.model('Counter', CounterSchema);
 
 // 商品属性模式
 const ProductAttrSchema = new mongoose.Schema({
-  id: { type: Number, unique: true, default: 1 }, // 自增的 id 字段，设置默认值为 1
+  id: { type: Number, unique: true, default: 1 }, //属性的id 自增的 id 字段，设置默认值为 1
   createTime: { type: Date, default: Date.now },
   updateTime: { type: Date, default: Date.now },
   attrName: String,
   categoryId: Number,
-  categoryLevel: Number,
+  categoryLevel: Number,  
   attrValueList: [
     {
-      id: { type: Number, unique: true, default: 1 }, // 自增的 id 字段，设置默认值为 1
+      id: { type: Number, unique: true, default: 1 }, //属性值的id, 自增的 id 字段，设置默认值为 1
       createTime: { type: Date, default: Date.now },
       updateTime: { type: Date, default: Date.now },
       valueName: String,
-      attrId: Number,
+      attrId: Number, //所归属的属性id
       _id: false // 设置 _id 选项为 false
     }
   ]
@@ -73,36 +73,27 @@ ProductAttrSchema.pre('save', async function (next) {
 // 更新操作时触发钩子函数
 ProductAttrSchema.pre('updateOne', async function (next) {
   const doc = this as any;
-  console.log('!updateOne is here');
   try {
     // 获取更新操作中要添加的属性值列表
-    const attrValueList = doc.getUpdate().$push.attrValueList;
-    console.log(attrValueList);
-
-    // 获取当前计数器值
-    // const counter = await Counter.findById('attrvaluelist_id');
-    // if (!counter || typeof counter.seq !== 'number') {
-    //   console.error('Counter document is invalid or not found');     
-    // }
-    // console.log('seq is' + counter.seq);
-    const counter = await Counter.findByIdAndUpdate('attrvaluelist_id',
-      { $inc: { seq: attrValueList.length } },
-      { new: true, upsert: true }
-    );
-    // console.log('counter :' + counter);
-    
-
-    // 为每个属性值对象生成自增id
-    for (const attrValue of attrValueList) {
-      attrValue.id = counter.seq++;
+    const update = doc.getUpdate();
+    if (update.$push && update.$push.attrValueList) {
+      const attrValueList = update.$push.attrValueList;
+      console.log(attrValueList);
+      // 获取当前计数器值    
+      const counter = await Counter.findByIdAndUpdate('attrvaluelist_id',
+        { $inc: { seq: attrValueList.length } },
+        { new: true, upsert: true }
+      );
+      // 为每个属性值对象生成自增id
+      for (const attrValue of attrValueList) {
+        attrValue.id = counter.seq++;
+      }
     }
     next();
   } catch (error) {
     return next(error);
   }
 });
-
-
 
 // 创建商品属性模型
 const ProductAttr = mongoose.model('ProductAttr', ProductAttrSchema);

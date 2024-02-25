@@ -118,27 +118,88 @@ router.post('/addAttrvalue', async (req, res) => {
 });
 
 // 添加一个属性
-router.post('/addAttr', async (req, res) => {
-    // 创建一个商品属性对象
-    const productAttr = new ProductAttr({
-        attrName: '尺寸',
-        categoryId: 14,
-        categoryLevel: 3,
-        attrValueList: []
-    });
+router.post('/saveattrinfo', async (req, res) => {
+    // 从请求体中获取 attrParams 对象
+    const attrParams = req.body;
+    // 如果没有attrParams.id就是新增，否则就是修改
 
-    // 保存商品属性对象到数据库
-    // 使用 try/catch 语句来处理错误
+    // 创建一个商品属性对象，使用 attrParams 的属性值
+    const productAttr = new ProductAttr({
+        attrName: attrParams.attrName,
+        categoryId: attrParams.categoryId,
+        categoryLevel: attrParams.categoryLevel,
+        attrValueList: attrParams.attrValueList
+    });
     try {
         // 使用 await 关键字等待 save 方法的返回值
         const result = await productAttr.save();
         // 如果没有错误，打印结果
-        console.log(result);
+        // 给 attrValueList 里的每个元素添加一个 attrId 属性
+        productAttr.attrValueList.forEach(element => {
+            element.attrId = productAttr.id; // 设置 attrId 为 productAttr 的 id 值
+        });
+        const Result = { code: 200, mgessage: '成功', result, ok: true }
+        res.json(Result);
     } catch (err) {
         // 如果有错误，打印错误信息
         console.error(err);
     }
+    // } else {
+    //     // 修改一个商品属性对象，使用 attrParams 的属性值
+    //     try {
+    //         // 使用 await 关键字等待 updateOne 方法的返回值
+    //         const result = await ProductAttr.updateOne(
+    //             { id: attrParams.id }, // 查询条件，根据 id 查找要更新的文档
+    //             {
+    //                 $set: { // 更新操作，使用 $set 操作符来更新文档的字段
+    //                     attrName: attrParams.attrName,
+    //                     attrValueList: attrParams.attrValueList
+    //                 }
+    //             }
+    //         );
+
+    //         // 给前端返回一个 200 的状态码和一个成功的消息
+    //         const Result = { code: 200, mgessage: '修改成功', result, ok: true }
+    //         res.json(Result);
+    //     } catch (err) {
+    //         // 如果有错误，打印错误信息
+    //         console.error(err);
+    //         // 给前端返回一个 500 的状态码和一个错误的消息
+    //         res.status(500).send("Internal Server Error");
+    //     }
+    // }
 });
+
+// 删除属性
+// 删除一个属性
+router.delete('/deleteattr/:attrId/:isEdit', async (req, res) => {
+    // 从请求体中获取 attrParams 对象
+    const attrId = req.params.attrId
+    const isEdit = req.params.isEdit
+    // 根据 attrParams.id 查找要删除的商品属性对象
+    try {
+        // 使用 await 关键字等待 deleteOne 方法的返回值
+        const result = await ProductAttr.deleteOne(
+            { id: attrId } // 查询条件，根据 id 查找要删除的文档
+        );
+
+        // 给前端返回一个 200 的状态码和一个成功的消息
+        let code = 0
+        if(!isEdit){
+            code = 200
+        }else{
+            code = 202
+        }
+        const Result = { code, mgessage: '删除成功', ok: true }        
+        res.json(Result);
+    } catch (err) {
+        // 如果有错误，打印错误信息
+        console.error(err);
+        // 给前端返回一个 500 的状态码和一个错误的消息
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 
 // 导出路由对象
 module.exports = router;
