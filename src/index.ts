@@ -44,6 +44,7 @@ const login = require('./routes/login');
 const trademark = require('./routes/baseTrademark');
 const fileUpload = require('./routes/fileUpload');
 const getCategory = require('./routes/category');
+const spu = require('./routes/spu');
 
 
 
@@ -53,6 +54,7 @@ app.use('/admin/acl/index', login);
 app.use('/admin/product/baseTrademark', trademark);
 app.use('/admin/product/fileUpload', fileUpload);
 app.use('/admin/product', getCategory);
+app.use('/admin/product/spu', spu);
 
 
 

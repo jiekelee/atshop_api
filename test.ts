@@ -1,24 +1,22 @@
-{
-    "code":200,
-    "message":"成功",
-    "data":[
-        {
-            "id":10,
-            "createTime":null,
-            "updateTime":null,
-            "attrName":"运行内存",
-            "categoryId":14,
-            "categoryLevel":3,
-            "attrValueList":[
-                {
-                    "id":0,
-                    "createTime":null,
-                    "updateTime":null,
-                    "valueName":"8G",
-                    "attrId":10
-                }                
-            ]
-        },        
+
+"data":  {
+    "records":  [
+              {
+                        "id":  10004,
+                        "createTime":  "2024-02-25 02:42:38",
+                        "updateTime":  "2024-02-25 02:42:38",
+                        "spuName":  "12",
+                        "description":  "",
+                        "category3Id":  61,
+                        "tmId":  null,
+                        "spuSaleAttrList":  null,
+                        "spuImageList":  null,
+                        "spuPosterList":  null
+              }
     ],
-    "ok":true
+    "total":  31,
+    "size":  3,
+    "current":  1,                   
+    "searchCount":  true,
+    "pages":  11
 }
